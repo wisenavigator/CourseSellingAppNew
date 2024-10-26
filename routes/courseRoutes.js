@@ -27,7 +27,6 @@ courseRouter.post("/create",verifyToken,async (req,res)=>{
 
 //Details on a course
 courseRouter.get("/:id",verifyToken,async (req,res)=>{
-    console.log("Param id",req.params.id)
     // const course= await courseModel.findOne({_id: req.params.id})
     const course = await courseModel.findById(req.params.id)
     console.log(course)
@@ -40,6 +39,37 @@ courseRouter.get("/:id",verifyToken,async (req,res)=>{
 
 })
 
+
+//Edit a course
+courseRouter.post("/:id",verifyToken, async (req,res)=>{
+    const  {title, description, price, imageUrl} = req.body;
+    const courseId = req.params.id;
+
+    const course = await courseModel.findById(courseId);
+    const creatorId = course.creatorId;
+
+
+    if(toString(creatorId) == toString(req.adminId)){
+
+        const updatedCourse = {
+            title: title?title : course.title,
+            description: description? description: course.description,
+            price: price? parseInt(price): course.price,
+            imageUrl: imageUrl? imageUrl: course.imageUrl
+        }
+        // const newCourse = await courseModel.findByIdAndUpdate(courseId,{title,description,price, imageUrl},{returnDocument:"after"})
+        const newCourse = await courseModel.findByIdAndUpdate(courseId,updatedCourse,{returnDocument:"after"})
+        
+        return res.status(200).json({
+            message: "Course update succesfully",
+            course: newCourse
+        })
+    }
+    else{
+        return res.status(403).json({message: "You are not authorized to edit this course"})
+    }
+
+})
 
 module.exports ={
     courseRouter: courseRouter
