@@ -99,6 +99,7 @@ async function verifyCoursePurchase(userId, courseId){
     console.log("Updated User ", updatedUser)
     return updatedUser;
 }
+//Add a test comment
 
 //Purchase a course
 // userRouter.post("/courses/:courseId", verifyUser, async (req, res) => {
